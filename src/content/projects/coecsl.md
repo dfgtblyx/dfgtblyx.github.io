@@ -40,12 +40,6 @@ I have served as a Lab Developer in the College of Engineering’s Control Syste
 
 My work spans embedded programming, sensor integration, communication between microcontrollers and higher-level computers, and the design of data-acquisition hardware. In parallel, I support weekly lab operations by working with teaching assistants to troubleshoot system issues and help students debug hardware and software problems during lab sessions.
 
-<figure>
-  <img src="/projects/gem.jpg" alt="gem.jpg" />
-  <figcaption style="text-align: center;">
-    GEM e2 vehicle platform
-  </figcaption>
-</figure>
 
 ## UR3 Robot Arm – ROS2 Migration
 The Intro to Robotics course relies on a UR3 industrial robot arm for hands-on laboratory exercises in motion planning and control. The robot was originally controlled using a custom driver built on an older version of ROS (Robot Operating System), a widely used software framework for robotics. As the robotics ecosystem has moved toward ROS2, continuing to rely on the older driver would make long-term maintenance and future updates increasingly difficult.
