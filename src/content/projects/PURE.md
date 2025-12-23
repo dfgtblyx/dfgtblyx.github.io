@@ -1,7 +1,7 @@
 ---
 title: "PURE (Personalized Unique Rolling Experience)"
 description: "A self-balancing, ball-based wheelchair designed to enable hands-free, omnidirectional mobility in tight indoor environments."
-category: "Low-Level Control" # Options: "Low-Level Control", "RL Algorithm", "Perception"
+category: "Research Project" # Options: "Low-Level Control", "RL Algorithm", "Perception"
 technologies: ["Dynamics Modeling","Robot Simulation","Real-Time Model-Based Control", "Embedded System", "Quadratic Programming"]
 image: "/projects/pure.png"
 order: -1

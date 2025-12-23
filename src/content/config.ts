@@ -5,7 +5,7 @@ const projectsCollection = defineCollection({
 	schema: z.object({
 		title: z.string(),
 		description: z.string(),
-		category: z.enum(['Low-Level Control', 'RL Algorithm', 'Perception']),
+		category: z.enum(['Research Project', 'Course Project', 'Individual Project', 'Lab Development']),
 		technologies: z.array(z.string()),
 		image: z.string(),
 		order: z.number().optional(), // Optional: lower numbers appear first (1, 2, 3...)
