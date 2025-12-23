@@ -1,0 +1,1131 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+// Get projects from Content Collections
+const projectsCollection = await getCollection('projects');
+const projects = projectsCollection
+	.map(p => ({
+		...p.data,
+		slug: p.id.replace('.md', ''),
+	}))
+	// Sort by order field (if present), then by slug
+	.sort((a, b) => {
+		if (a.order !== undefined && b.order !== undefined) {
+			return a.order - b.order;
+		}
+		if (a.order !== undefined) return -1;
+		if (b.order !== undefined) return 1;
+		return a.slug.localeCompare(b.slug);
+	});
+
+const skills = {
+	"Robotics": ["ROS/ROS2", "MuJoCo", "Gazebo", "Model-based Control", "Quadratic Programming (qpOASES)", "Trajectory Optimization (CasADi)"],
+	"Programming & Tools": ["Python", "Matlab/Simulink", "C++", "Git", "PyTorch"],
+	"Embedded & Systems": ["Embedded C", "Microcontrollers", "Linux", "Real-time control", "Mechatronics prototyping", "SPI/UART/CAN/I2C"],
+};
+
+
+---
+
+<Layout>
+	<!-- Hero Section -->
+	<section id="hero">
+		<!-- Hero Icons - Top Right -->
+		<div class="hero-icons">
+			<a href="https://github.com/dfgtblyx" target="_blank" rel="noopener noreferrer" class="hero-icon" title="GitHub">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+					<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+				</svg>
+			</a>
+			<a href="mailto:yixiaol2@illinois.edu" class="hero-icon" title="Email">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<rect x="2" y="4" width="20" height="16" rx="2"/>
+					<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+				</svg>
+			</a>
+			<a href="/resume.pdf" target="_blank" rel="noopener noreferrer" class="hero-icon hero-resume-pill" title="Download Resume">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+					<polyline points="14 2 14 8 20 8"/>
+					<line x1="12" y1="18" x2="12" y2="12"/>
+					<line x1="9" y1="15" x2="12" y2="18"/>
+					<line x1="15" y1="15" x2="12" y2="18"/>
+				</svg>
+				<span class="resume-text">Resume</span>
+			</a>
+		</div>
+
+		<div class="hero-content">
+			<!-- Profile Photo -->
+			<img
+				src="/profile.png"
+				alt="Yixiao Liu"
+				class="profile-photo"
+				onerror="this.style.display='none'"
+			/>
+
+			<h1 class="hero-title">Yixiao Liu </h1>
+			<!-- <p class="hero-subtitle">Mechanical Engineering PhD Candidate</p> -->
+			<p class="hero-university">
+			PhD Candidate · Mechanical Engineering · UIUC <br> 
+				
+			</p>
+			
+
+			<p class="hero-tagline"><a href="https://hdcl.mechanical.illinois.edu/" target="_blank" rel="noopener noreferrer">
+					Human Dynamics and Controls Lab
+				</a><br> </p>
+
+			<p class="hero-description">
+				 I work on control strategies for underactuated and dynamically challenging robotic systems.
+			</p>
+
+			<!--a href="#experience" class="hero-cta">View Experience ↓</a-->
+		</div>
+	</section>
+{/*
+	<!-- Research Experience Timeline -->
+	<section id="experience" class="timeline-section">
+		<div class="timeline-container">
+			<div class="timeline-header">
+				<h2 class="timeline-title">Research Experience</h2>
+				<button class="timeline-scroll-button" id="scroll-to-latest" aria-label="Scroll to latest experience">
+					<span class="order-text">Latest</span>
+					<span class="order-arrow">→</span>
+				</button>
+			</div>
+			<div class="timeline-scroll-wrapper">
+				<div class="timeline-scroll" id="timeline-scroll">
+					{experiences.map((exp, index) => (
+						<div class={`timeline-item ${exp.type === 'minor' ? 'timeline-item-minor' : ''}`}>
+							<div class={`timeline-card ${exp.type === 'minor' ? 'timeline-card-minor' : ''}`}>
+								<div class="timeline-period">{exp.period}</div>
+								<h3 class="timeline-role">{exp.role}</h3>
+								<div class="timeline-institution">{exp.institution}</div>
+								{exp.description && <p class="timeline-description">{exp.description}</p>}
+								{exp.website && exp.type === 'major' && (
+									<a href={exp.website} target="_blank" rel="noopener noreferrer" class="timeline-website-btn">
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+											<circle cx="12" cy="12" r="10"/>
+											<line x1="2" y1="12" x2="22" y2="12"/>
+											<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+										</svg>
+										Lab Website
+									</a>
+								)}
+							</div>
+							{index < experiences.length - 1 && (
+								<div class="timeline-connector-line"></div>
+							)}
+						</div>
+					))}
+				</div>
+			</div>
+		</div>
+	</section>
+	*/}
+
+	<!-- Main Content Area with Sidebar -->
+	<div class="main-container" id="projects">
+		<!-- Sticky Sidebar -->
+		<aside class="sidebar">
+			<!-- Contact Section -->
+			<div class="sidebar-card">
+				<h3 class="sidebar-title">Let's Connect</h3>
+				<div class="contact-links">
+					<a href="https://github.com/dfgtblyx" target="_blank" rel="noopener noreferrer" class="contact-link">
+						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+							<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+						</svg>
+						<span>dfgtblyx</span>
+					</a>
+					<a href="mailto:yixiaol2@illinois.edu" class="contact-link">
+						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<rect x="2" y="4" width="20" height="16" rx="2"/>
+							<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+						</svg>
+						<span>yixiaol2@illinois.edu</span>
+					</a>
+					<a href="https://www.linkedin.com/in/yixiaoliu1/"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="contact-link"
+						>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="currentColor"
+						>
+							<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zM6.956 20.452H3.717V9h3.239v11.452z"/>
+						</svg>
+						<span>Yixiao Liu</span>
+						</a>
+				</div>
+			</div>
+
+			<!-- Skills Section -->
+			<div class="sidebar-card">
+				<h3 class="sidebar-title">Skills</h3>
+				<div class="skills-content">
+					{Object.entries(skills).map(([category, items]) => (
+						<div class="skill-category">
+							<h4 class="skill-category-title">{category}</h4>
+							<div class="skill-tags">
+								{items.map((skill) => (
+									<span class="skill-tag">{skill}</span>
+								))}
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+		</aside>
+
+		<!-- Projects Section -->
+		<main class="projects-section">
+			<h2 class="section-title">Projects</h2>
+			<p class="section-description">
+				A collection of robotics projects.
+			</p>
+
+			<div class="projects-grid">
+				{projects.map((project) => (
+					<article class="project-card">
+						<a href={`/projects/${project.slug}`} class="project-card-link">
+							<div class="project-image-container">
+								<img
+									src={project.image}
+									alt={project.title}
+									class="project-image"
+									onerror="this.src='https://via.placeholder.com/600x400/1e40af/ffffff?text=Add+Project+Image'"
+								/>
+								<span class="project-category-badge">{project.category}</span>
+							</div>
+
+							<div class="project-content">
+								<h3 class="project-title">{project.title}</h3>
+								<p class="project-description">{project.description}</p>
+
+								<div class="project-tech">
+									{project.technologies.map((tech) => (
+										<span class="tech-badge">{tech}</span>
+									))}
+								</div>
+
+								<div class="project-actions">
+									<span class="view-details">View Details →</span>
+								</div>
+							</div>
+						</a>
+
+						{(project.github || project.video || project.website) && (
+							<div class="project-external-links">
+								{project.github && typeof project.github === 'string' && (
+								<a href={project.github} target="_blank" rel="noopener noreferrer" class="project-link" onclick="event.stopPropagation()">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+										<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+									</svg>
+									Source Code
+								</a>
+							)}
+							{project.github && Array.isArray(project.github) && (
+								<a href={project.github[0].url} target="_blank" rel="noopener noreferrer" class="project-link" onclick="event.stopPropagation()">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+										<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+									</svg>
+									Source Code
+								</a>
+							)}
+							{project.website && (
+								<a href={project.website} target="_blank" rel="noopener noreferrer" class="project-link" onclick="event.stopPropagation()">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+										<circle cx="12" cy="12" r="10"/>
+										<line x1="2" y1="12" x2="22" y2="12"/>
+										<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+									</svg>
+									Website
+								</a>
+							)}
+							{project.video && (
+								<a href={project.video} target="_blank" rel="noopener noreferrer" class="project-link" onclick="event.stopPropagation()">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+										<polygon points="5 3 19 12 5 21 5 3"/>
+									</svg>
+									Video Demo
+								</a>
+							)}
+							</div>
+						)}
+					</article>
+				))}
+			</div>
+		</main>
+	</div>
+</Layout>
+
+<style>
+	/* Hero Section */
+	#hero {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+		background: linear-gradient(135deg, #f9fafb 0%, #e0f2fe 100%);
+		position: relative;
+	}
+
+	.hero-content {
+		max-width: 800px;
+		text-align: center;
+	}
+
+	/* Hero Icons - Top Right */
+	.hero-icons {
+		position: absolute;
+		top: 2rem;
+		right: 2rem;
+		display: flex;
+		gap: 1rem;
+		z-index: 10;
+	}
+
+	.hero-icon {
+		width: 48px;
+		height: 48px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: white;
+		border-radius: 50%;
+		color: var(--color-primary);
+		transition: all 0.3s ease;
+		box-shadow: var(--shadow-md);
+	}
+
+	.hero-icon:hover {
+		background: var(--color-primary);
+		color: white;
+		transform: translateY(-4px);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.hero-icon svg {
+		width: 24px;
+		height: 24px;
+	}
+
+	/* Resume pill button */
+	.hero-resume-pill {
+		width: auto;
+		padding: 0 1.25rem;
+		border-radius: 24px;
+		gap: 0.5rem;
+	}
+
+	.hero-resume-pill svg {
+		width: 24px;
+		height: 24px;
+	}
+
+	.resume-text {
+		font-size: 1.0rem;
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	.profile-photo {
+		width: 360px;
+		height: 360px;
+		border-radius: 50%;
+		object-fit: cover;
+		margin-bottom: 2rem;
+		border: 4px solid white;
+		box-shadow: var(--shadow-lg);
+		transition: transform 0.3s ease;
+	}
+
+	.profile-photo:hover {
+		transform: scale(1.05);
+	}
+
+	.hero-title {
+		font-size: 3.5rem;
+		font-weight: 700;
+		margin-bottom: 0.5rem;
+		color: var(--color-text);
+		background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	.hero-subtitle {
+		font-size: 1.4rem;
+		color: var(--color-primary);
+		margin-bottom: 0.5rem;
+		font-weight: 500;
+	}
+
+	.hero-university {
+		font-size: 1.4rem;
+		margin-bottom: 0.5rem;
+		font-weight: 500;
+	}
+
+	.hero-university a {
+		color: var(--color-primary);
+		text-decoration: none;
+		transition: color 0.2s ease;
+		border-bottom: 2px solid transparent;
+		padding-bottom: 2px;
+	}
+
+	.hero-university a:hover {
+		color: var(--color-primary);
+		border-bottom-color: var(--color-primary);
+	}
+
+	.hero-tagline {
+		font-size: 1.25rem;
+		color: var(--color-text-light);
+		margin-bottom: 1.5rem;
+	}
+
+	.hero-description {
+		font-size: 1.1rem;
+		color: var(--color-text);
+		line-height: 1.8;
+		margin-bottom: 2rem;
+		max-width: 600px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.hero-cta {
+		display: inline-block;
+		padding: 1rem 2rem;
+		background: var(--color-primary);
+		color: white;
+		border-radius: var(--border-radius);
+		font-weight: 600;
+		font-size: 1.1rem;
+		transition: all 0.3s ease;
+		box-shadow: var(--shadow-md);
+	}
+
+	.hero-cta:hover {
+		background: var(--color-accent);
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-lg);
+	}
+
+	/* Research Experience Timeline */
+	.timeline-section {
+		padding: 4rem 0 0rem;
+		overflow: hidden;
+	}
+
+	.timeline-container {
+		max-width: 1400px;
+		margin: 0 auto;
+		padding: 0 2rem;
+	}
+
+	.timeline-header {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.timeline-title {
+		font-size: 2.5rem;
+		color: var(--color-text);
+		margin: 0;
+	}
+
+	.timeline-scroll-button {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.75rem 1.5rem;
+		background: var(--color-surface);
+		color: var(--color-primary);
+		border: none;
+		border-radius: 8px;
+		font-size: 1rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		box-shadow: var(--shadow-md);
+	}
+
+	.timeline-scroll-button:hover {
+		background: var(--color-primary);
+		color: var(--color-surface);
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.timeline-scroll-button .order-arrow {
+		font-size: 1.25rem;
+		font-weight: bold;
+	}
+
+	.timeline-scroll-button .order-text {
+		font-weight: 600;
+	}
+
+	.timeline-scroll-wrapper {
+		position: relative;
+		padding-bottom: 2rem;
+	}
+
+	.timeline-scroll {
+		display: flex;
+		gap: 2rem;
+		overflow-x: auto;
+		overflow-y: visible;
+		scroll-behavior: smooth;
+		padding: 2rem 1rem 3rem;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: thin;
+		scrollbar-color: var(--color-primary) transparent;
+		user-select: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+	}
+
+	.timeline-scroll::-webkit-scrollbar {
+		height: 8px;
+	}
+
+	.timeline-scroll::-webkit-scrollbar-track {
+		background: rgba(0, 0, 0, 0.05);
+		border-radius: 4px;
+	}
+
+	.timeline-scroll::-webkit-scrollbar-thumb {
+		background: var(--color-primary);
+		border-radius: 4px;
+	}
+
+	.timeline-scroll::-webkit-scrollbar-thumb:hover {
+		background: var(--color-accent);
+	}
+
+	.timeline-item {
+		flex: 0 0 375px;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.timeline-card {
+		background: white;
+		border-radius: var(--border-radius);
+		padding: 1.5rem;
+		box-shadow: var(--shadow-md);
+		border: 2px solid var(--color-border);
+		transition: all 0.3s ease;
+		height: 300px;
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+
+	.timeline-card:hover {
+		transform: translateY(-8px);
+		box-shadow: var(--shadow-lg);
+		border-color: var(--color-primary);
+	}
+
+	.timeline-period {
+		color: var(--color-primary);
+		font-weight: 600;
+		font-size: 0.9rem;
+		margin-bottom: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+
+	.timeline-role {
+		font-size: 1.25rem;
+		color: var(--color-text);
+		margin-bottom: 0.5rem;
+		font-weight: 600;
+	}
+
+	.timeline-institution {
+		color: var(--color-text-light);
+		font-size: 1rem;
+		margin-bottom: 0.75rem;
+		font-weight: 500;
+	}
+
+	.timeline-description {
+		color: var(--color-text-light);
+		font-size: 0.95rem;
+		line-height: 1.6;
+		flex-grow: 1;
+		margin-bottom: 0.75rem;
+	}
+
+	.timeline-website-btn {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.625rem 1.25rem;
+		color: var(--color-primary);
+		background: white;
+		border: 2px solid var(--color-primary);
+		border-radius: 6px;
+		font-size: 0.875rem;
+		font-weight: 500;
+		text-decoration: none;
+		transition: all 0.2s ease;
+		margin-top: auto;
+		width: fit-content;
+		align-self: flex-start;
+	}
+
+	.timeline-website-btn:hover {
+		background: var(--color-primary);
+		color: white;
+		transform: translateY(-1px);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.timeline-website-btn svg {
+		flex-shrink: 0;
+	}
+
+	/* Minor experience cards - smaller and less prominent */
+	.timeline-item-minor {
+		flex: 0 0 250px;
+		align-self: flex-end;
+		margin-top: 1rem;
+	}
+
+	.timeline-card-minor {
+		height: 180px;
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		opacity: 0.9;
+	}
+
+	.timeline-card-minor:hover {
+		transform: translateY(-4px);
+		opacity: 1;
+	}
+
+	.timeline-card-minor .timeline-period {
+		font-size: 0.8rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.timeline-card-minor .timeline-role {
+		font-size: 1rem;
+		margin-bottom: 0.35rem;
+	}
+
+	.timeline-card-minor .timeline-institution {
+		font-size: 0.9rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.timeline-card-minor .timeline-description {
+		font-size: 0.85rem;
+		line-height: 1.5;
+	}
+
+	/* Horizontal connector lines between cards */
+	.timeline-connector-line {
+		position: absolute;
+		bottom: 3rem;
+		right: -2rem;
+		width: 2rem;
+		height: 2px;
+		background: var(--color-primary);
+		z-index: 0;
+	}
+
+	.timeline-connector-line::before {
+		content: '';
+		position: absolute;
+		right: -4px;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 8px;
+		height: 8px;
+		background: var(--color-primary);
+		border-radius: 50%;
+	}
+
+	.timeline-line {
+		position: absolute;
+		bottom: 37px;
+		left: 1rem;
+		right: 1rem;
+		height: 3px;
+		background: transparent;
+		z-index: 1;
+	}
+
+
+	/* Main Container Layout */
+	.main-container {
+		max-width: 1400px;
+		margin: 0 auto;
+		padding: 0rem 2rem 4rem;
+		display: grid;
+		grid-template-columns: 280px 1fr;
+		gap: 3rem;
+	}
+
+	/* Sticky Sidebar */
+	.sidebar {
+		position: sticky;
+		top: 2rem;
+		align-self: start;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.sidebar-card {
+		background: white;
+		border-radius: var(--border-radius);
+		padding: 1.5rem;
+		box-shadow: var(--shadow-md);
+		border: 1px solid var(--color-border);
+	}
+
+	.sidebar-title {
+		font-size: 1.25rem;
+		margin-bottom: 1rem;
+		color: var(--color-text);
+	}
+
+	/* Skills */
+	.skills-content {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.skill-category {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.skill-category-title {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--color-primary);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.skill-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.skill-tag {
+		display: inline-block;
+		padding: 0.25rem 0.75rem;
+		background: var(--color-surface);
+		color: var(--color-text);
+		border-radius: 6px;
+		font-size: 0.875rem;
+		border: 1px solid var(--color-border);
+	}
+
+	/* Contact */
+	.contact-links {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.contact-link {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.75rem;
+		border-radius: 8px;
+		transition: all 0.2s ease;
+		color: var(--color-text);
+		min-width: 0; /* Allow flexbox to shrink */
+	}
+
+	.contact-link:hover {
+		background: var(--color-surface);
+		color: var(--color-primary);
+		transform: translateX(4px);
+	}
+
+	.contact-link svg {
+		flex-shrink: 0;
+	}
+
+	.contact-link span {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-size: 0.875rem;
+		min-width: 0; /* Allow text to shrink */
+	}
+
+	/* Projects Section */
+	.projects-section {
+		min-height: 100vh;
+	}
+
+	.section-title {
+		font-size: 2.5rem;
+		margin-bottom: 0.5rem;
+		color: var(--color-text);
+	}
+
+	.section-description {
+		font-size: 1.1rem;
+		color: var(--color-text-light);
+		margin-bottom: 2rem;
+	}
+
+	.projects-grid {
+		display: grid;
+		gap: 2rem;
+		grid-template-columns: 1fr;
+	}
+
+	/* Project Card */
+	.project-card {
+		background: white;
+		border-radius: var(--border-radius);
+		overflow: hidden;
+		box-shadow: var(--shadow-md);
+		border: 1px solid var(--color-border);
+		transition: all 0.3s ease;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.project-card:hover {
+		transform: translateY(-4px);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.project-card-link {
+		text-decoration: none;
+		color: inherit;
+		display: block;
+		flex: 1;
+	}
+
+	.project-image-container {
+		position: relative;
+		width: 100%;
+		height: 300px;
+		overflow: hidden;
+		background: var(--color-surface);
+	}
+
+	.project-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.3s ease;
+	}
+
+	.project-card:hover .project-image {
+		transform: scale(1.05);
+	}
+
+	.project-category-badge {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		background: rgba(30, 64, 175, 0.9);
+		color: white;
+		padding: 0.5rem 1rem;
+		border-radius: 6px;
+		font-size: 0.875rem;
+		font-weight: 600;
+		backdrop-filter: blur(4px);
+	}
+
+	.project-content {
+		padding: 1.5rem;
+	}
+
+	.project-title {
+		font-size: 1.5rem;
+		margin-bottom: 0.75rem;
+		color: var(--color-text);
+	}
+
+	.project-description {
+		color: var(--color-text-light);
+		margin-bottom: 1rem;
+		line-height: 1.6;
+	}
+
+	.project-tech {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 1rem;
+	}
+
+	.tech-badge {
+		padding: 0.375rem 0.75rem;
+		background: var(--color-surface);
+		color: var(--color-primary);
+		border-radius: 6px;
+		font-size: 0.875rem;
+		font-weight: 500;
+		border: 1px solid var(--color-border);
+	}
+
+	.project-actions {
+		margin-top: 0.5rem;
+	}
+
+	.view-details {
+		display: inline-block;
+		color: var(--color-primary);
+		font-weight: 600;
+		font-size: 0.95rem;
+	}
+
+	.project-card-link:hover .view-details {
+		color: var(--color-accent);
+	}
+
+	.project-external-links {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding: 1rem 1.5rem;
+		border-top: 1px solid var(--color-border);
+		background: var(--color-surface);
+	}
+
+	.project-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.625rem 1.25rem;
+		color: var(--color-primary);
+		background: white;
+		border: 2px solid var(--color-primary);
+		border-radius: 6px;
+		font-weight: 500;
+		transition: all 0.2s ease;
+		font-size: 0.875rem;
+	}
+
+	.project-link:hover {
+		background: var(--color-primary);
+		color: white;
+		transform: translateY(-1px);
+		box-shadow: var(--shadow-sm);
+	}
+
+
+	/* Responsive Design */
+	@media (max-width: 1024px) {
+		.main-container {
+			grid-template-columns: 240px 1fr;
+			gap: 2rem;
+		}
+
+		.hero-title {
+			font-size: 2.5rem;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.hero-icons {
+			top: 1rem;
+			right: 1rem;
+			gap: 0.5rem;
+		}
+
+		.hero-icon {
+			width: 40px;
+			height: 40px;
+		}
+
+		.hero-icon svg {
+			width: 20px;
+			height: 20px;
+		}
+
+		.hero-resume-pill {
+			padding: 0 1rem;
+		}
+
+		.hero-resume-pill svg {
+			width: 18px;
+			height: 18px;
+		}
+
+		.resume-text {
+			font-size: 0.8rem;
+		}
+
+		.main-container {
+			grid-template-columns: 1fr;
+			padding: 2rem 1rem;
+		}
+
+		.sidebar {
+			position: static;
+			order: 2;
+		}
+
+		.projects-section {
+			order: 1;
+		}
+
+		.profile-photo {
+			width: 140px;
+			height: 140px;
+		}
+
+		.hero-title {
+			font-size: 2rem;
+		}
+
+		.hero-subtitle {
+			font-size: 1.25rem;
+		}
+
+		.hero-university {
+			font-size: 0.95rem;
+		}
+
+		.hero-tagline {
+			font-size: 1rem;
+		}
+
+		.hero-description {
+			font-size: 1rem;
+		}
+
+		.section-title {
+			font-size: 2rem;
+		}
+
+		/* Timeline responsive */
+		.timeline-title {
+			font-size: 2rem;
+		}
+
+		.timeline-scroll-button {
+			padding: 0.6rem 1.2rem;
+			font-size: 0.9rem;
+		}
+
+		.timeline-container {
+			padding: 0 1rem;
+		}
+
+		.timeline-item {
+			flex: 0 0 280px;
+		}
+
+		.timeline-item-minor {
+			flex: 0 0 240px;
+		}
+
+		.timeline-card {
+			height: auto;
+			min-height: 220px;
+		}
+
+		.timeline-card-minor {
+			height: auto;
+			min-height: 160px;
+		}
+	}
+</style>
+
+<script>
+	// Smooth scroll for anchor links
+	document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+		anchor.addEventListener('click', (e) => {
+			e.preventDefault();
+			const targetId = anchor.getAttribute('href');
+			const targetElement = targetId ? document.querySelector(targetId) : null;
+
+			if (targetElement) {
+				targetElement.scrollIntoView({
+					behavior: 'smooth',
+					block: 'start'
+				});
+			}
+		});
+	});
+
+	// "Latest" button to scroll to the rightmost position
+	const scrollToLatestBtn = document.getElementById('scroll-to-latest');
+	const timelineScrollElement = document.getElementById('timeline-scroll');
+
+	if (scrollToLatestBtn && timelineScrollElement) {
+		scrollToLatestBtn.addEventListener('click', () => {
+			timelineScrollElement.scrollTo({
+				left: timelineScrollElement.scrollWidth,
+				behavior: 'smooth'
+			});
+		});
+	}
+
+	// Drag to scroll functionality for timeline
+	const timelineScroll = document.getElementById('timeline-scroll');
+	if (timelineScroll) {
+		let isDown = false;
+		let startX: number;
+		let scrollLeft: number;
+
+		timelineScroll.addEventListener('mousedown', (e) => {
+			isDown = true;
+			timelineScroll.style.cursor = 'grabbing';
+			startX = e.pageX - timelineScroll.offsetLeft;
+			scrollLeft = timelineScroll.scrollLeft;
+		});
+
+		timelineScroll.addEventListener('mouseleave', () => {
+			isDown = false;
+			timelineScroll.style.cursor = 'grab';
+		});
+
+		timelineScroll.addEventListener('mouseup', () => {
+			isDown = false;
+			timelineScroll.style.cursor = 'grab';
+		});
+
+		timelineScroll.addEventListener('mousemove', (e) => {
+			if (!isDown) return;
+			e.preventDefault();
+			const x = e.pageX - timelineScroll.offsetLeft;
+			const walk = (x - startX) * 2; // Scroll speed multiplier
+			timelineScroll.scrollLeft = scrollLeft - walk;
+		});
+
+		// Set initial cursor
+		timelineScroll.style.cursor = 'grab';
+	}
+</script>
